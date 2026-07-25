@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laraib Asif — AI/ML Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0B;
+  --surface: rgba(255,255,255,0.045);
+  --surface-solid:#151517;
+  --line: rgba(255,255,255,0.11);
+  --text:#F5F5F6;
+  --muted:#96969C;
+  --silver:#E7E7EA;
+  --grad: linear-gradient(120deg, #ffffff, #9a9aa0 55%, #ffffff);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg); color:var(--text); font-family:'Inter',sans-serif;
+  line-height:1.65; overflow-x:hidden;
+}
+::selection{ background:var(--silver); color:#0A0A0B; }
+a{ color:inherit; text-decoration:none; }
+img,svg{ display:block; }
+.mono{ font-family:'JetBrains Mono',monospace; }
+.display{ font-family:'Space Grotesk',sans-serif; }
+
+/* ============ CURTAIN LOADER ============ */
+#loader{ position:fixed; inset:0; z-index:999; }
+.loader-panel{ position:absolute; top:0; bottom:0; width:50%; background:#0A0A0B; transition:transform 0.95s cubic-bezier(.76,0,.24,1); display:flex; align-items:center; z-index:2; }
+.loader-panel.left{ left:0; justify-content:flex-end; }
+.loader-panel.right{ right:0; justify-content:flex-start; }
+#loader.hide .loader-panel.left{ transform:translateX(-100%); }
+#loader.hide .loader-panel.right{ transform:translateX(100%); }
+.loader-center{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:3; width:min(420px,80vw); text-align:center; transition:opacity 0.4s ease; }
+#loader.hide .loader-center{ opacity:0; }
+.loader-line{ font-family:'JetBrains Mono',monospace; font-size:0.82rem; color:var(--silver); min-height:1.4em; margin-bottom:16px; letter-spacing:0.02em; }
+.bar-track{ width:100%; height:1px; background:rgba(255,255,255,0.12); overflow:hidden; }
+.bar-fill{ height:100%; width:0%; background:var(--silver); }
+#loader.hide{ pointer-events:none; }
+
+/* ============ BACKGROUND ============ */
+.mesh{ position:fixed; inset:0; z-index:-3; background:var(--bg); overflow:hidden; }
+.blob{ position:absolute; border-radius:50%; filter:blur(110px); opacity:0.16; background:#ffffff; will-change:transform; }
+.blob-1{ width:520px; height:520px; top:-12%; left:-10%; animation:drift1 30s ease-in-out infinite; }
+.blob-2{ width:460px; height:460px; top:35%; right:-12%; animation:drift2 36s ease-in-out infinite; opacity:0.10; }
+.blob-3{ width:420px; height:420px; bottom:-18%; left:25%; animation:drift3 32s ease-in-out infinite; opacity:0.09; }
+@keyframes drift1{ 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(60px,80px) scale(1.15);} }
+@keyframes drift2{ 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-70px,60px) scale(0.9);} }
+@keyframes drift3{ 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(50px,-60px) scale(1.1);} }
+.mesh-grid{
+  position:fixed; inset:0; z-index:-2;
+  background-image:linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 30%, transparent 100%);
+  opacity:0.5;
+}
+.noise{ position:fixed; inset:0; z-index:-1; opacity:0.025; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.bg-word{
+  position:absolute; top:44%; left:50%; transform:translate(-50%,-50%); z-index:0; pointer-events:none;
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:min(22vw,260px); letter-spacing:-0.03em;
+  color:transparent; -webkit-text-stroke:1px rgba(255,255,255,0.06); white-space:nowrap; user-select:none;
+  grid-column:1/-1; grid-row:1/-1; max-width:100%;
+}
+
+/* ============ NAV ============ */
+nav{
+  position:fixed; top:0; left:0; right:0; z-index:60;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 6vw; backdrop-filter:blur(14px);
+  background:rgba(10,10,11,0.55); border-bottom:1px solid var(--line);
+}
+.logo{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.05rem; letter-spacing:0.01em; }
+.logo span{ color:var(--muted); }
+.nav-links{ display:flex; gap:32px; font-size:0.86rem; color:var(--muted); }
+.nav-links a{ position:relative; transition:color 0.2s ease; }
+.nav-links a::after{ content:''; position:absolute; left:0; bottom:-6px; width:0; height:1px; background:var(--silver); transition:width 0.25s ease; }
+.nav-links a:hover{ color:var(--text); } .nav-links a:hover::after{ width:100%; }
+
+.nav-right{ display:flex; align-items:center; gap:18px; }
+.nav-toggle{ display:none; width:36px; height:30px; position:relative; cursor:pointer; background:none; border:none; padding:0; z-index:70; }
+.nav-toggle span{ position:absolute; left:0; right:0; height:1px; background:var(--silver); transition:transform 0.3s ease, opacity 0.3s ease; }
+.nav-toggle span:nth-child(1){ top:6px; }
+.nav-toggle span:nth-child(2){ top:15px; }
+.nav-toggle span:nth-child(3){ top:24px; }
+.nav-toggle.open span:nth-child(1){ transform:translateY(9px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2){ opacity:0; }
+.nav-toggle.open span:nth-child(3){ transform:translateY(-9px) rotate(-45deg); }
+
+@media (max-width:760px){
+  .nav-toggle{ display:block; }
+  .nav-links{
+    position:fixed; top:0; right:0; height:100vh; width:min(280px,72vw);
+    flex-direction:column; align-items:flex-start; gap:0; justify-content:flex-start;
+    background:rgba(10,10,11,0.97); border-left:1px solid var(--line);
+    padding:100px 32px 32px; transform:translateX(100%); transition:transform 0.35s cubic-bezier(.76,0,.24,1);
+    z-index:65; font-size:1rem;
+  }
+  .nav-links.open{ transform:translateX(0); }
+  .nav-links a{ display:block; width:100%; padding:16px 0; border-bottom:1px solid var(--line); }
+  .nav-right .btn-ghost{ display:none; }
+}
+@media (min-width:761px){ .nav-scrim{ display:none !important; } }
+.nav-scrim{
+  position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:64; opacity:0; pointer-events:none; transition:opacity 0.3s ease;
+}
+.nav-scrim.open{ opacity:1; pointer-events:auto; }
+
+#dock{ position:fixed; right:26px; top:50%; transform:translateY(-50%); z-index:55; display:flex; flex-direction:column; gap:16px; }
+@media (max-width:900px){ #dock{ display:none; } }
+#dock .dot{ width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.18); position:relative; transition:all 0.3s ease; cursor:pointer; }
+#dock .dot::before{ content:attr(data-label); position:absolute; right:20px; top:50%; transform:translateY(-50%) translateX(6px); font-family:'JetBrains Mono',monospace; font-size:0.66rem; color:var(--muted); white-space:nowrap; opacity:0; transition:all 0.25s ease; pointer-events:none; }
+#dock .dot:hover::before{ opacity:1; transform:translateY(-50%) translateX(0); }
+#dock .dot.active{ background:var(--silver); box-shadow:0 0 10px rgba(255,255,255,0.5); transform:scale(1.5); }
+
+section{ padding:150px 6vw 110px; max-width:1200px; margin:0 auto; position:relative; }
+
+#scroll-rail{ position:fixed; top:0; left:0; height:2px; width:0%; background:var(--silver); z-index:100; box-shadow:0 0 10px rgba(255,255,255,0.5); }
+
+.reveal{ opacity:0; transform:translateY(34px); transition:opacity 0.8s cubic-bezier(.2,.7,.3,1), transform 0.8s cubic-bezier(.2,.7,.3,1); }
+.reveal.visible{ opacity:1; transform:translateY(0); }
+.cards .reveal:nth-child(1){ transition-delay:0.02s; } .cards .reveal:nth-child(2){ transition-delay:0.08s; }
+.cards .reveal:nth-child(3){ transition-delay:0.14s; } .cards .reveal:nth-child(4){ transition-delay:0.2s; }
+.cards .reveal:nth-child(5){ transition-delay:0.26s; } .cards .reveal:nth-child(6){ transition-delay:0.32s; }
+
+.wipe{ position:relative; overflow:hidden; }
+.wipe .wipe-mask{ position:absolute; inset:0; background:var(--bg); transform-origin:left; z-index:2; transform:scaleX(1); transition:transform 0.9s cubic-bezier(.76,0,.24,1); }
+.wipe.visible .wipe-mask{ transform:scaleX(0); }
+
+.load-in{ opacity:0; transform:translateY(22px); animation:loadIn 0.9s cubic-bezier(.2,.7,.3,1) forwards; }
+.load-in.d1{ animation-delay:0.05s;} .load-in.d2{ animation-delay:0.22s;} .load-in.d3{ animation-delay:0.4s;} .load-in.d4{ animation-delay:0.58s;}
+@keyframes loadIn{ to{ opacity:1; transform:translateY(0);} }
+
+/* ============ HERO ============ */
+.hero{ padding-top:170px; display:grid; grid-template-columns:1.15fr 0.85fr; gap:50px; align-items:center; min-height:94vh; position:relative; }
+@media (max-width:900px){ .hero{ grid-template-columns:1fr; min-height:auto; } }
+.hero::before{
+  content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
+  background: radial-gradient(380px circle at var(--mx,50%) var(--my,20%), rgba(255,255,255,0.06), transparent 70%);
+  transition: background 0.12s linear;
+}
+.hero > div, .hero .photo-wrap{ position:relative; z-index:1; }
+
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:0.75rem;
+  color:var(--silver); border:1px solid rgba(255,255,255,0.2); padding:6px 14px; border-radius:100px;
+  background:rgba(255,255,255,0.04); margin-bottom:26px;
+}
+.eyebrow::before{ content:''; width:6px; height:6px; border-radius:50%; background:var(--silver); box-shadow:0 0 8px rgba(255,255,255,0.7); animation:pulse 2s infinite; }
+@keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+.name-scramble{
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(2.6rem,6vw,4.6rem);
+  line-height:1; letter-spacing:-0.02em; margin-bottom:8px;
+  background:var(--grad); background-size:220% auto; -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation: gradShift 7s ease-in-out infinite;
+}
+@keyframes gradShift{ 0%,100%{ background-position:0% center;} 50%{ background-position:100% center;} }
+
+.hero .role{ font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:clamp(1.1rem,2vw,1.5rem); color:var(--muted); margin-bottom:24px; }
+.hero p.lead{ color:var(--muted); font-size:1.05rem; max-width:48ch; margin-bottom:38px; }
+.type-target{ color:var(--text); border-bottom:1px solid rgba(255,255,255,0.3); }
+.type-cursor{ display:inline-block; width:2px; background:var(--silver); margin-left:2px; animation:blink 0.9s steps(1) infinite; }
+@keyframes blink{ 50%{opacity:0;} }
+
+.btn-row{ display:flex; gap:16px; flex-wrap:wrap; }
+.btn{ position:relative; display:inline-flex; align-items:center; gap:8px; padding:14px 26px; border-radius:10px; font-size:0.93rem; font-weight:500; transition:transform 0.15s ease, box-shadow 0.2s ease; will-change:transform; }
+.btn-primary{ background:var(--silver); color:#0A0A0B; font-weight:600; }
+.btn-primary:hover{ transform:translateY(-3px); box-shadow:0 10px 30px rgba(255,255,255,0.18); }
+.btn-ghost{ border:1px solid var(--line); color:var(--text); background:rgba(255,255,255,0.02); }
+.btn-ghost:hover{ border-color:rgba(255,255,255,0.4); transform:translateY(-3px); }
+
+/* ============ PHOTO ============ */
+.photo-wrap{ perspective:1000px; display:flex; justify-content:center; }
+.photo-tilt{ position:relative; width:min(360px,80vw); transition:transform 0.15s ease-out; transform-style:preserve-3d; }
+.photo-frame{
+  position:relative; border-radius:18px; overflow:hidden; border:1px solid var(--line);
+  box-shadow:0 30px 70px rgba(0,0,0,0.55);
+}
+.photo-frame img{
+  width:100%; height:100%; object-fit:cover; aspect-ratio:1/1;
+  filter:grayscale(1) contrast(1.08) brightness(0.95);
+  transition:filter 0.7s ease, transform 0.5s ease;
+}
+.photo-tilt:hover .photo-frame img{ filter:grayscale(0.15) contrast(1.05) brightness(1); transform:scale(1.03); }
+.photo-frame::after{
+  content:''; position:absolute; inset:0; background:linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.55) 100%);
+  pointer-events:none;
+}
+.scan-line{
+  position:absolute; left:0; right:0; height:2px; background:linear-gradient(90deg, transparent, var(--silver), transparent);
+  top:0; opacity:0.9; box-shadow:0 0 14px rgba(255,255,255,0.6);
+  animation: scan 3.2s ease-in-out infinite;
+}
+@keyframes scan{ 0%{ top:0%; opacity:0;} 8%{opacity:1;} 50%{ top:100%; opacity:0.6;} 92%{opacity:1;} 100%{ top:0%; opacity:0;} }
+.photo-caption{ display:flex; justify-content:space-between; align-items:center; margin-top:16px; font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--muted); }
+.photo-caption .rec{ display:flex; align-items:center; gap:6px; }
+.photo-caption .rec::before{ content:''; width:6px; height:6px; border-radius:50%; background:#ffffff; box-shadow:0 0 6px rgba(255,255,255,0.8); animation:pulse 1.6s infinite; }
+
+/* ============ SECTION HEADERS ============ */
+.sec-head{ display:flex; align-items:baseline; gap:16px; margin-bottom:16px; }
+.sec-num{ font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:0.85rem; }
+.sec-title{ font-family:'Space Grotesk',sans-serif; font-size:clamp(1.7rem,3vw,2.3rem); font-weight:600; }
+.sec-sub{ color:var(--muted); max-width:62ch; margin-bottom:52px; font-size:0.98rem; }
+
+.glass{ background:var(--surface); border:1px solid var(--line); backdrop-filter:blur(16px); border-radius:20px; }
+
+/* ============ ABOUT ============ */
+.about-grid{ display:grid; grid-template-columns:1.1fr 0.9fr; gap:28px; }
+@media (max-width:820px){ .about-grid{ grid-template-columns:1fr; } }
+.about-grid .glass{ padding:36px; }
+.about-grid p{ color:var(--muted); margin-bottom:16px; }
+.about-grid strong{ color:var(--text); font-weight:600; }
+.stack-row{ display:flex; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--line); font-size:0.92rem; }
+.stack-row:last-child{ border-bottom:none; }
+.stack-row .k{ color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:0.76rem; }
+.stack-row .v{ text-align:right; max-width:60%; }
+
+/* ============ PROJECT CARDS ============ */
+.cards{ display:grid; grid-template-columns:repeat(2,1fr); gap:26px; }
+@media (max-width:820px){ .cards{ grid-template-columns:1fr; } }
+.card{
+  position:relative; border-radius:18px; padding:32px; overflow:hidden; isolation:isolate;
+  background:var(--surface); border:1px solid var(--line); backdrop-filter:blur(16px);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  transform-style:preserve-3d;
+}
+.card::before{
+  content:''; position:absolute; inset:0; z-index:-1; opacity:0; border-radius:18px;
+  background: radial-gradient(360px circle at var(--px,50%) var(--py,50%), rgba(255,255,255,0.08), transparent 60%);
+  transition:opacity 0.3s ease;
+}
+.card:hover::before{ opacity:1; }
+.card:hover{ border-color:rgba(255,255,255,0.3); box-shadow:0 20px 50px rgba(0,0,0,0.5); }
+.card.featured{ grid-column:1/-1; display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+@media (max-width:820px){ .card.featured{ grid-template-columns:1fr; } }
+
+.card-top{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; }
+.card-tag{ font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--silver); background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.2); padding:4px 10px; border-radius:6px; }
+.card-metric{ font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--muted); text-align:right; }
+.card-metric b{ color:var(--text); font-size:0.9rem; display:block; }
+.card h3{ font-family:'Space Grotesk',sans-serif; font-size:1.28rem; margin-bottom:10px; font-weight:600; }
+.card p{ color:var(--muted); font-size:0.93rem; margin-bottom:18px; }
+.chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+.chip{ font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--muted); border:1px solid var(--line); padding:4px 10px; border-radius:100px; transition:border-color 0.2s ease, color 0.2s ease; }
+.chip:hover{ border-color:var(--silver); color:var(--text); }
+.card-links{ display:flex; gap:18px; font-size:0.85rem; }
+.card-links a{ color:var(--text); display:flex; align-items:center; gap:6px; position:relative; }
+.card-links a::after{ content:''; position:absolute; left:0; bottom:-3px; width:0; height:1px; background:var(--silver); transition:width 0.25s ease; }
+.card-links a:hover::after{ width:100%; }
+
+.diagram-box{ border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,0.015); display:flex; align-items:center; justify-content:center; padding:22px; }
+.diagram-box svg{ width:100%; height:auto; }
+
+/* ============ SKILLS MARQUEE ============ */
+.marquee-wrap{ overflow:hidden; position:relative; padding:14px 0; }
+.marquee-wrap::before, .marquee-wrap::after{ content:''; position:absolute; top:0; bottom:0; width:80px; z-index:2; }
+.marquee-wrap::before{ left:0; background:linear-gradient(90deg, var(--bg), transparent); }
+.marquee-wrap::after{ right:0; background:linear-gradient(270deg, var(--bg), transparent); }
+.marquee-track{ display:flex; gap:16px; width:max-content; animation:scrollLeft 34s linear infinite; }
+.marquee-track.rev{ animation:scrollRight 30s linear infinite; }
+@keyframes scrollLeft{ from{ transform:translateX(0);} to{ transform:translateX(-50%);} }
+@keyframes scrollRight{ from{ transform:translateX(-50%);} to{ transform:translateX(0);} }
+.pill{ font-family:'JetBrains Mono',monospace; font-size:0.82rem; padding:12px 22px; border-radius:100px; border:1px solid var(--line); background:var(--surface); white-space:nowrap; display:flex; align-items:center; gap:8px; }
+.pill .dot-sm{ width:6px; height:6px; border-radius:50%; background:var(--silver); }
+
+/* ============ CONTACT ============ */
+.contact-box{ position:relative; border-radius:26px; padding:70px 6vw; text-align:center; overflow:hidden; }
+.contact-box h2{ font-family:'Space Grotesk',sans-serif; font-size:clamp(1.9rem,4vw,2.7rem); margin-bottom:18px; position:relative; z-index:1; }
+.contact-box p{ color:var(--muted); margin-bottom:36px; position:relative; z-index:1; }
+.contact-links{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; position:relative; z-index:1; }
+
+footer{ text-align:center; padding:44px 6vw 60px; color:var(--muted); font-size:0.82rem; font-family:'JetBrains Mono',monospace; }
+
+@media (max-width:600px){
+  section{ padding:120px 6vw 80px; }
+  .hero{ padding-top:140px; }
+  .about-grid .glass{ padding:26px; }
+  .card{ padding:24px; }
+  .card.featured{ gap:24px; }
+  .contact-box{ padding:52px 6vw; border-radius:20px; }
+  .btn-row{ flex-direction:column; align-items:stretch; }
+  .btn{ justify-content:center; }
+  .contact-links{ flex-direction:column; align-items:stretch; }
+  .stack-row{ flex-wrap:wrap; gap:4px; }
+  .stack-row .v{ max-width:100%; text-align:left; }
+  nav{ padding:14px 5vw; }
+}
+@media (max-width:380px){
+  .name-scramble{ font-size:2.2rem; }
+  .card-top{ flex-wrap:wrap; gap:10px; }
+  .card-metric{ text-align:left; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .eyebrow::before, .type-cursor, .blob, .marquee-track, .name-scramble, .btn-primary, .scan-line{ animation:none !important; }
+  .reveal, .wipe .wipe-mask{ opacity:1 !important; transform:none !important; }
+  .load-in{ opacity:1 !important; transform:none !important; animation:none !important; }
+  #loader{ display:none !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="loader-panel left"></div>
+  <div class="loader-panel right"></div>
+  <div class="loader-center">
+    <div class="loader-line mono" id="loader-text">&nbsp;</div>
+    <div class="bar-track"><div class="bar-fill" id="loader-bar"></div></div>
+  </div>
+</div>
+
+<div id="scroll-rail"></div>
+<div class="mesh">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+<div class="mesh-grid"></div>
+<div class="noise"></div>
+
+<nav>
+  <div class="logo">LARAIB<span>.AI</span></div>
+  <div class="nav-links" id="navLinks">
+    <a href="#about">About</a>
+    <a href="#projects">Projects</a>
+    <a href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-right">
+    <a href="https://github.com/laraibjutt071" target="_blank" class="btn btn-ghost mono" style="padding:9px 18px; font-size:0.8rem;">GitHub ↗</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="nav-scrim" id="navScrim"></div>
+
+<div id="dock">
+  <div class="dot" data-target="top" data-label="Intro"></div>
+  <div class="dot" data-target="about" data-label="About"></div>
+  <div class="dot" data-target="projects" data-label="Projects"></div>
+  <div class="dot" data-target="skills" data-label="Skills"></div>
+  <div class="dot" data-target="contact" data-label="Contact"></div>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="bg-word">LARAIB ASIF</div>
+  <div>
+    <div class="eyebrow load-in d1">available for ML / AI engineering roles</div>
+    <h1 class="name-scramble load-in d2" id="scrambleName">LARAIB ASIF</h1>
+    <div class="role load-in d2">AI / ML Engineer — Explainable Systems</div>
+    <p class="lead load-in d3">I build <span class="type-target" id="typewriter"></span><span class="type-cursor">&nbsp;</span> — machine learning that can show its work, not just its output.</p>
+    <div class="btn-row load-in d4">
+      <a href="#projects" class="btn btn-primary">View projects</a>
+      <a href="https://www.linkedin.com/in/laraib-asif-48575a313" target="_blank" class="btn btn-ghost">Connect on LinkedIn</a>
+    </div>
+  </div>
+
+  <div class="photo-wrap load-in d3">
+    <div class="photo-tilt" id="photoTilt">
+      <div class="photo-frame">
+        <img src="photo.jpg" alt="Laraib Asif">
+        <div class="scan-line"></div>
+      </div>
+      <div class="photo-caption">
+        <span>LARAIB ASIF</span>
+        <span class="rec">ANALYZING</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="sec-head reveal"><span class="sec-num mono">01</span><span class="sec-title display">About</span></div>
+  <div class="about-grid">
+    <div class="glass reveal">
+      <p>I work across the applied ML stack — from cleaning tabular health data and training classical models, to fine-tuning generative and retrieval pipelines with LLMs. What ties my projects together is <strong>trust</strong>: a diabetes model is only useful if a clinician can see why it flagged a patient, and a chatbot answering medical questions is only safe if its answers are grounded in real sources.</p>
+      <p>My recent work spans <strong>explainable AI for image generation</strong>, <strong>sensor-based activity recognition</strong>, and <strong>RAG-based medical chatbots</strong> — alongside lighter product builds like a wallpaper app. Code for most of it is on <a href="https://github.com/laraibjutt071" target="_blank" style="color:var(--text); border-bottom:1px solid rgba(255,255,255,0.4);">GitHub</a>.</p>
+    </div>
+    <div class="glass reveal" style="padding:36px;">
+      <div class="stack-row"><span class="k">FOCUS</span><span class="v">Explainable & Applied ML</span></div>
+      <div class="stack-row"><span class="k">LANGUAGES</span><span class="v">Python, SQL</span></div>
+      <div class="stack-row"><span class="k">ML / DL</span><span class="v">Scikit-learn, TensorFlow/Keras, PyTorch</span></div>
+      <div class="stack-row"><span class="k">XAI</span><span class="v">SHAP, LIME, Grad-CAM</span></div>
+      <div class="stack-row"><span class="k">GENERATIVE / LLM</span><span class="v">Prompt-to-image, RAG, vector search</span></div>
+      <div class="stack-row"><span class="k">DEPLOY</span><span class="v">Streamlit, Flask</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="sec-head reveal"><span class="sec-num mono">02</span><span class="sec-title display">Selected projects</span></div>
+  <p class="sec-sub reveal">Six builds spanning healthcare prediction, generative explainability, sensor-based recognition, and applied product design.</p>
+
+  <div class="cards">
+
+    <div class="card featured reveal" data-tilt>
+      <div>
+        <div class="card-top">
+          <span class="card-tag">FEATURED</span>
+          <span class="card-metric">MODALITY<b>Text → Image</b></span>
+        </div>
+        <h3>Explainable Prompt-to-Image System</h3>
+        <p>A generative system that turns a text prompt into an image, then explains <em>why</em> the model produced that result — surfacing which prompt tokens and visual regions most influenced the output, instead of treating generation as a black box.</p>
+        <div class="chip-row"><span class="chip">diffusion</span><span class="chip">attention maps</span><span class="chip">Grad-CAM</span><span class="chip">prompt engineering</span></div>
+        <div class="card-links"><a href="https://github.com/laraibjutt071" target="_blank">Repo ↗</a></div>
+      </div>
+      <div class="diagram-box">
+        <svg viewBox="0 0 320 200">
+          <rect x="10" y="80" width="90" height="40" rx="8" fill="none" stroke="rgba(255,255,255,0.3)"/>
+          <text x="55" y="104" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#96969C">"prompt"</text>
+          <line x1="100" y1="100" x2="150" y2="100" stroke="#E7E7EA" stroke-dasharray="4 5"/>
+          <rect x="150" y="70" width="70" height="60" rx="8" fill="rgba(255,255,255,0.06)" stroke="#E7E7EA"/>
+          <text x="185" y="105" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#E7E7EA">model</text>
+          <line x1="220" y1="100" x2="260" y2="100" stroke="#E7E7EA" stroke-dasharray="4 5"/>
+          <rect x="260" y="80" width="50" height="40" rx="6" fill="rgba(255,255,255,0.1)" stroke="#E7E7EA"/>
+          <text x="80" y="150" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#6b6b70">input</text>
+          <text x="185" y="150" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#6b6b70">generation</text>
+          <text x="285" y="150" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#6b6b70">image</text>
+          <text x="185" y="35" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#E7E7EA">+ explanation overlay</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="card reveal" data-tilt>
+      <div class="card-top"><span class="card-tag">HEALTHCARE ML</span><span class="card-metric">TASK<b>Classification</b></span></div>
+      <h3>Diabetes Prediction System</h3>
+      <p>Predicts diabetes risk from patient health metrics (glucose, BMI, age, blood pressure) using classical ML models, with feature-importance explanations so predictions are interpretable rather than a bare probability score.</p>
+      <div class="chip-row"><span class="chip">scikit-learn</span><span class="chip">SHAP</span><span class="chip">Streamlit</span></div>
+      <div class="card-links"><a href="https://github.com/laraibjutt071" target="_blank">Repo ↗</a></div>
+    </div>
+
+    <div class="card reveal" data-tilt>
+      <div class="card-top"><span class="card-tag">DEEP LEARNING</span><span class="card-metric">INPUT<b>Sensor streams</b></span></div>
+      <h3>Human Activity Recognition</h3>
+      <p>Classifies human activity — walking, sitting, standing, running — from accelerometer and gyroscope sensor data using sequence models, turning raw motion signals into recognizable activity labels.</p>
+      <div class="chip-row"><span class="chip">CNN / LSTM</span><span class="chip">time-series</span><span class="chip">TensorFlow</span></div>
+      <div class="card-links"><a href="https://github.com/laraibjutt071" target="_blank">Repo ↗</a></div>
+    </div>
+
+    <div class="card reveal" data-tilt>
+      <div class="card-top"><span class="card-tag">LLM / RAG</span><span class="card-metric">DOMAIN<b>Medical Q&A</b></span></div>
+      <h3>Medical Question-Answering Chatbot</h3>
+      <p>A retrieval-augmented chatbot for medical questions — it retrieves relevant passages from a medical knowledge base with vector search, then grounds the LLM's answer in that retrieved context to reduce hallucination.</p>
+      <div class="chip-row"><span class="chip">RAG</span><span class="chip">vector DB</span><span class="chip">LLM</span></div>
+      <div class="card-links"><a href="https://github.com/laraibjutt071" target="_blank">Repo ↗</a></div>
+    </div>
+
+    <div class="card reveal" data-tilt>
+      <div class="card-top"><span class="card-tag">PRODUCT</span><span class="card-metric">TYPE<b>App</b></span></div>
+      <h3>Wallpaper App</h3>
+      <p>A clean browsing app for discovering and downloading high-quality wallpapers, organized by category and search — a lighter, product-focused build outside the ML stack.</p>
+      <div class="chip-row"><span class="chip">UI/UX</span><span class="chip">app design</span></div>
+      <div class="card-links"><a href="https://github.com/laraibjutt071" target="_blank">Repo ↗</a></div>
+    </div>
+
+    <div class="card reveal" data-tilt>
+      <div class="card-top"><span class="card-tag">COMPUTER VISION</span><span class="card-metric">STATUS<b>Live demo</b></span></div>
+      <h3>Snake Classifier</h3>
+      <p>An image classification model that identifies snake species from photos, deployed as an interactive Streamlit app for real-time predictions.</p>
+      <div class="chip-row"><span class="chip">CNN</span><span class="chip">image classification</span><span class="chip">Streamlit</span></div>
+      <div class="card-links">
+        <a href="https://github.com/laraibjutt071/Snake-Classifier-Project" target="_blank">Repo ↗</a>
+        <a href="https://snake-classifier.streamlit.app/" target="_blank">Live demo ↗</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="sec-head reveal"><span class="sec-num mono">03</span><span class="sec-title display">Toolkit</span></div>
+  <p class="sec-sub reveal">The stack behind the projects above.</p>
+
+  <div class="marquee-wrap reveal">
+    <div class="marquee-track" id="track1"></div>
+  </div>
+  <div class="marquee-wrap reveal" style="margin-top:16px;">
+    <div class="marquee-track rev" id="track2"></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-box glass reveal">
+    <h2 class="display">Let's build something explainable.</h2>
+    <p>Open to AI/ML engineering roles, research collaborations, and freelance builds.</p>
+    <div class="contact-links">
+      <a href="https://www.linkedin.com/in/laraib-asif-48575a313" target="_blank" class="btn btn-primary">LinkedIn ↗</a>
+      <a href="https://github.com/laraibjutt071" target="_blank" class="btn btn-ghost">GitHub ↗</a>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 Laraib Asif — built with intent, not templates.</footer>
+
+<script>
+  // ---------- boot loader (curtain transition) ----------
+  const loaderText = document.getElementById('loader-text');
+  const loaderBar = document.getElementById('loader-bar');
+  const loader = document.getElementById('loader');
+  const bootLines = ['booting laraib.ai ...','loading model registry ...','compiling explainability layer ...','ready.'];
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(prefersReduced){
+    loader.style.display = 'none';
+  } else {
+    let li = 0;
+    function nextLine(){
+      if(li < bootLines.length){
+        loaderText.textContent = bootLines[li];
+        loaderBar.style.transition = 'width 0.5s ease';
+        loaderBar.style.width = ((li+1)/bootLines.length*100) + '%';
+        li++;
+        setTimeout(nextLine, 380);
+      } else {
+        setTimeout(()=> loader.classList.add('hide'), 250);
+      }
+    }
+    setTimeout(nextLine, 200);
+  }
+
+  // ---------- scroll progress rail ----------
+  const rail = document.getElementById('scroll-rail');
+  function updateRail(){
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    rail.style.width = scrolled + '%';
+  }
+  window.addEventListener('scroll', updateRail, { passive:true });
+  updateRail();
+
+  // ---------- reveal on scroll ----------
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){ entry.target.classList.add('visible'); io.unobserve(entry.target); }
+    });
+  }, { threshold:0.15, rootMargin:'0px 0px -60px 0px' });
+  revealEls.forEach(el=> io.observe(el));
+
+  // ---------- dock active section ----------
+  const dockDots = document.querySelectorAll('#dock .dot');
+  const sectionIds = ['top','about','projects','skills','contact'];
+  const sectionEls = sectionIds.map(id=> document.getElementById(id)).filter(Boolean);
+  dockDots.forEach(dot=>{
+    dot.addEventListener('click', ()=>{
+      const target = document.getElementById(dot.dataset.target);
+      if(target) target.scrollIntoView({ behavior:'smooth' });
+    });
+  });
+  const sectionObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const id = entry.target.id;
+        dockDots.forEach(d=> d.classList.toggle('active', d.dataset.target === id));
+      }
+    });
+  }, { threshold:0.4 });
+  sectionEls.forEach(el=> sectionObserver.observe(el));
+
+  // ---------- hero cursor glow + photo tilt ----------
+  const heroSection = document.querySelector('.hero');
+  const photoTilt = document.getElementById('photoTilt');
+  if(heroSection){
+    heroSection.addEventListener('mousemove', (e)=>{
+      const rect = heroSection.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      heroSection.style.setProperty('--mx', x + '%');
+      heroSection.style.setProperty('--my', y + '%');
+      if(photoTilt && window.matchMedia('(pointer: fine)').matches){
+        const rx = ((y/100) - 0.5) * -10;
+        const ry = ((x/100) - 0.5) * 10;
+        photoTilt.style.transform = 'rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)';
+      }
+    });
+    heroSection.addEventListener('mouseleave', ()=>{
+      if(photoTilt) photoTilt.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    });
+  }
+
+  // ---------- card cursor spotlight + tilt ----------
+  document.querySelectorAll('[data-tilt]').forEach(card=>{
+    card.addEventListener('mousemove', (e)=>{
+      const rect = card.getBoundingClientRect();
+      const px = e.clientX - rect.left;
+      const py = e.clientY - rect.top;
+      card.style.setProperty('--px', px + 'px');
+      card.style.setProperty('--py', py + 'px');
+      if(window.matchMedia('(pointer: fine)').matches){
+        const rx = ((py/rect.height) - 0.5) * -6;
+        const ry = ((px/rect.width) - 0.5) * 6;
+        card.style.transform = 'perspective(800px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) translateY(-2px)';
+      }
+    });
+    card.addEventListener('mouseleave', ()=>{ card.style.transform = ''; });
+  });
+
+  // ---------- name scramble reveal ----------
+  const scrambleEl = document.getElementById('scrambleName');
+  if(scrambleEl && !prefersReduced){
+    const finalText = scrambleEl.textContent;
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#%&*';
+    let frame = 0;
+    const totalFrames = 22;
+    function scrambleTick(){
+      let out = '';
+      for(let i=0;i<finalText.length;i++){
+        const ch = finalText[i];
+        if(ch === ' '){ out += ' '; continue; }
+        const revealAt = (i / finalText.length) * totalFrames;
+        if(frame >= revealAt + 6){ out += ch; }
+        else { out += chars[Math.floor(Math.random()*chars.length)]; }
+      }
+      scrambleEl.textContent = out;
+      frame++;
+      if(frame < totalFrames + 8){ requestAnimationFrame(()=> setTimeout(scrambleTick, 28)); }
+      else { scrambleEl.textContent = finalText; }
+    }
+    setTimeout(scrambleTick, 1600);
+  }
+
+  // ---------- typewriter ----------
+  const words = ['predictive models', 'generative pipelines', 'explainable AI systems', 'RAG chatbots'];
+  const typeEl = document.getElementById('typewriter');
+  if(typeEl){
+    let wordIdx = 0, charIdx = 0, deleting = false;
+    function tick(){
+      const current = words[wordIdx];
+      if(!deleting){
+        charIdx++;
+        typeEl.textContent = current.slice(0, charIdx);
+        if(charIdx === current.length){ deleting = true; setTimeout(tick, 1400); return; }
+      } else {
+        charIdx--;
+        typeEl.textContent = current.slice(0, charIdx);
+        if(charIdx === 0){ deleting = false; wordIdx = (wordIdx + 1) % words.length; }
+      }
+      setTimeout(tick, deleting ? 35 : 55);
+    }
+    tick();
+  }
+
+  // ---------- magnetic buttons ----------
+  document.querySelectorAll('.btn').forEach(btn=>{
+    btn.addEventListener('mousemove', (e)=>{
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width/2;
+      const y = e.clientY - rect.top - rect.height/2;
+      btn.style.transform = 'translate(' + (x*0.12) + 'px, ' + (y*0.25) + 'px)';
+    });
+    btn.addEventListener('mouseleave', ()=>{ btn.style.transform = ''; });
+  });
+
+  // ---------- mobile nav toggle ----------
+  const navToggle = document.getElementById('navToggle');
+  const navLinksEl = document.getElementById('navLinks');
+  const navScrim = document.getElementById('navScrim');
+  function closeNav(){
+    navToggle.classList.remove('open');
+    navLinksEl.classList.remove('open');
+    navScrim.classList.remove('open');
+    navToggle.setAttribute('aria-expanded','false');
+  }
+  function toggleNav(){
+    const isOpen = navLinksEl.classList.toggle('open');
+    navToggle.classList.toggle('open', isOpen);
+    navScrim.classList.toggle('open', isOpen);
+    navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  }
+  if(navToggle){
+    navToggle.addEventListener('click', toggleNav);
+    navScrim.addEventListener('click', closeNav);
+    navLinksEl.querySelectorAll('a').forEach(a=> a.addEventListener('click', closeNav));
+    window.addEventListener('resize', ()=>{ if(window.innerWidth > 760) closeNav(); });
+  }
+
+  // ---------- skills marquee content ----------
+  const skillsRow1 = ['Python','Scikit-learn','TensorFlow','Keras','PyTorch','SHAP','LIME','Grad-CAM','Streamlit'];
+  const skillsRow2 = ['RAG Pipelines','Vector Search','Prompt Engineering','CNN','LSTM','Flask','SQL','LLM Integration','Diffusion Models'];
+  function fillTrack(id, items){
+    const el = document.getElementById(id);
+    const html = items.map(s=> '<div class="pill"><span class="dot-sm"></span>' + s + '</div>').join('');
+    el.innerHTML = html + html;
+  }
+  fillTrack('track1', skillsRow1);
+  fillTrack('track2', skillsRow2);
+</script>
+</body>
+</html>
